@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(cuid())
+  email          String          @unique
+  passwordHash   String
+  name           String
+  createdAt      DateTime        @default(now())
+  profile        Profile?
+  resources      Resource[]
+  tests          Test[]
+  topicProgress  TopicProgress[]
+}
+
+model Profile {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  examName   String
+  examDate   DateTime
+  dailyHours Int
+  testDay    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subject {
+  id        String     @id @default(cuid())
+  name      String
+  code      String     @unique
+  topics    Topic[]
+  resources Resource[]
+}
+
+model Topic {
+  id        String          @id @default(cuid())
+  subjectId String
+  name      String
+  order     Int
+  subject   Subject         @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  progress  TopicProgress[]
+}
+
+model TopicProgress {
+  id        String   @id @default(cuid())
+  userId    String
+  topicId   String
+  completed Boolean  @default(false)
+  minutes   Int      @default(0)
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, topicId])
+}
+
+model Resource {
+  id             String         @id @default(cuid())
+  userId         String
+  name           String
+  type           String
+  subject        String
+  // Real link to a syllabus subject. Nullable so a resource can genuinely
+  // apply to "all subjects" (e.g. a full PYQ paper) — that case is excluded
+  // from any single subject's progress on purpose, not silently guessed at.
+  // When set, this resource's completed/total units feed into that
+  // subject's progress bar and into the adaptive plan's weakness score.
+  subjectId      String?
+  totalUnits     Int            @default(1)
+  completedUnits Int            @default(0)
+  url            String?
+  description    String?
+  playlistId     String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subjectRef     Subject?       @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  items          ResourceItem[]
+}
+
+model ResourceItem {
+  id         String   @id @default(cuid())
+  resourceId String
+  videoId    String
+  title      String
+  position   Int
+  completed  Boolean  @default(false)
+  progress   Int      @default(0)
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@unique([resourceId, videoId])
+}
+
+model Test {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  type      String
+  subject   String?
+  total     Int      @default(1)
+  completed Int      @default(0)
+  score     Int?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

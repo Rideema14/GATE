@@ -1,0 +1,2 @@
+import {NextResponse} from 'next/server';import {db} from '@/lib/db';import {verify,setSession} from '@/lib/auth';
+export async function POST(req:Request){const {email,password}=await req.json();const u=await db.user.findUnique({where:{email:String(email).toLowerCase()},include:{profile:true}});if(!u||!(await verify(password,u.passwordHash)))return NextResponse.json({error:'Email or password is incorrect.'},{status:401});await setSession(u.id);return NextResponse.json({next:u.profile?'/dashboard':'/setup'})}

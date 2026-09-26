@@ -1,0 +1,2 @@
+import {redirect} from 'next/navigation';import {user} from '@/lib/auth';import AppShell from '@/components/AppShell';import DashboardClient from '@/components/DashboardClient';
+export default async function Page(){const u=await user();if(!u)redirect('/login');if(!u.profile)redirect('/setup');return <AppShell title={`Good ${new Date().getHours()<12?'morning':new Date().getHours()<18?'afternoon':'evening'} 👋`}><DashboardClient/></AppShell>}
