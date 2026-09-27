@@ -1,15 +1,15 @@
 import {NextResponse} from 'next/server';
 import {db} from '@/lib/db';
-import {user} from '@/lib/auth';
+import {authId} from '@/lib/auth';
 
 export async function POST(req: Request) {
-  const u = await user();
+  const u = await authId();
   if (!u) return NextResponse.json({error: 'Unauthorized'}, {status: 401});
   const b = await req.json();
   return NextResponse.json(
     await db.test.create({
       data: {
-        userId: u.id,
+        userId: u,
         name: b.name,
         type: b.type || 'Mock',
         subject: b.subject || null,
@@ -20,10 +20,10 @@ export async function POST(req: Request) {
 }
 
 export async function PATCH(req: Request) {
-  const u = await user();
+  const u = await authId();
   if (!u) return NextResponse.json({error: 'Unauthorized'}, {status: 401});
   const b = await req.json();
-  const t = await db.test.findFirst({where: {id: b.id, userId: u.id}});
+  const t = await db.test.findFirst({where: {id: b.id, userId: u}});
   if (!t) return NextResponse.json({error: 'Not found'}, {status: 404});
   return NextResponse.json(
     await db.test.update({

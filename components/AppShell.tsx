@@ -47,7 +47,7 @@ export default function AppShell({children, title, sub}: {children: React.ReactN
       <div className={`scrim ${open ? 'show' : ''}`} onClick={() => setOpen(false)} />
       <aside className={`side ${open ? 'open' : ''}`}>
         <div className="brand">
-          <div className="brand-mark">D</div>
+          <div className="brand-mark">🎯</div>
           <div>
             <b>DA Prep</b>
             <small>Your exam control desk</small>

@@ -1,15 +1,15 @@
 import {NextResponse} from 'next/server';
 import {db} from '@/lib/db';
-import {user} from '@/lib/auth';
+import {authId} from '@/lib/auth';
 
 export async function POST(req: Request) {
-  const u = await user();
+  const u = await authId();
   if (!u) return NextResponse.json({error: 'Not signed in'}, {status: 401});
   const b = await req.json();
   if (!b.examDate) return NextResponse.json({error: 'Choose an exam date.'}, {status: 400});
 
   await db.profile.upsert({
-    where: {userId: u.id},
+    where: {userId: u},
     update: {
       examName: b.examName || 'My Exam',
       examDate: new Date(b.examDate + 'T23:59:59Z'),
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       testDay: b.testDay || 'Sunday',
     },
     create: {
-      userId: u.id,
+      userId: u,
       examName: b.examName || 'My Exam',
       examDate: new Date(b.examDate + 'T23:59:59Z'),
       dailyHours: Number(b.dailyHours) || 4,

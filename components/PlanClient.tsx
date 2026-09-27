@@ -1,10 +1,16 @@
 'use client';
 import {useEffect, useState} from 'react';
+import {makePlan} from '@/lib/plan';
 
 export default function PlanClient() {
   const [d, setD] = useState<any>();
   useEffect(() => {
-    Promise.all([fetch('/api/plan').then(r => r.json()), fetch('/api/me').then(r => r.json())]).then(([p, m]) => setD({p, m}));
+    fetch('/api/me').then(r => r.json()).then(m => {
+      // Computed locally from the same data the page already needed to
+      // fetch — no separate /api/plan round trip.
+      const p = makePlan(m.user.profile, m.topics, m.progress, m.tests, m.resources);
+      setD({p, m});
+    });
   }, []);
   if (!d) return <div className="empty">Building your plan…</div>;
 

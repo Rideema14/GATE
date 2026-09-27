@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server';
-import {user} from '@/lib/auth';
+import {authId} from '@/lib/auth';
 
 function playlistIdFromUrl(value: string) {
   try {
@@ -10,7 +10,7 @@ function playlistIdFromUrl(value: string) {
 }
 
 export async function POST(req: Request) {
-  const u = await user();
+  const u = await authId();
   if (!u) return NextResponse.json({error: 'Unauthorized'}, {status: 401});
 
   const {url} = await req.json();

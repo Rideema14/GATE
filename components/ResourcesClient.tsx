@@ -8,7 +8,12 @@ import ResourceIcon from './ResourceIcon';
 // Each is tied to the exact subject name from the seeded syllabus so that,
 // once added, it counts toward the right subject's progress automatically.
 const suggestions = [
-  {name: 'Official GATE Papers', type: 'pyq', subjectName: null as string | null, url: 'https://gate2026.iitg.ac.in/download.html', description: 'Official previous years\' papers and answer keys, all subjects.'},
+  {name: 'GATE DA 2026 Question Paper', type: 'pyq', subjectName: null as string | null, url: 'https://docs.aglasem.com/view/3dbad98c-8047-11f1-82e7-0aa932765c8b', description: 'Official paper, conducted by IIT Guwahati.'},
+  {name: 'GATE DA 2026 Answer Key', type: 'pyq', subjectName: null as string | null, url: 'https://docs.aglasem.com/view/042ee258-8047-11f1-83ad-0aa932765c8b', description: 'Official answer key for the 2026 paper.'},
+  {name: 'GATE DA 2025 Question Paper', type: 'pyq', subjectName: null as string | null, url: 'https://docs.aglasem.com/view/13b3c34e-3893-11f0-8293-0a5e36bc6706', description: 'Official paper, conducted by IIT Roorkee.'},
+  {name: 'GATE DA 2025 — Solved on GATE Overflow', type: 'pyq', subjectName: null as string | null, url: 'https://gateoverflow.in/tag/gateda-2025', description: "No clean official key is public for this year — every question from this paper, answered and explained by the community."},
+  {name: 'GATE DA 2024 Question Paper', type: 'pyq', subjectName: null as string | null, url: 'https://docs.aglasem.com/view/3bcd14a6-315b-11ef-8ae9-0a5e36bc6706', description: 'Official paper, conducted by IISc Bangalore — the first year GATE DA existed.'},
+  {name: 'GATE DA 2024 Answer Key', type: 'pyq', subjectName: null as string | null, url: 'https://docs.aglasem.com/view/20f3cdc8-315b-11ef-9554-0a5e36bc6706', description: 'Official answer key for the 2024 paper.'},
   {name: 'NPTEL GATE Resources', type: 'notes', subjectName: null, url: 'https://gate.nptel.ac.in/', description: 'Free NPTEL learning and practice resources for GATE.'},
   {name: 'Gate Smashers (YouTube)', type: 'video', subjectName: 'General Aptitude', url: 'https://www.youtube.com/@GateSmashers', description: 'Popular channel covering aptitude and reasoning for GATE.'},
   {name: 'StatQuest (YouTube)', type: 'video', subjectName: 'Probability & Statistics', url: 'https://www.youtube.com/@statquest', description: 'Clear, visual explanations of probability and statistics concepts.'},
@@ -27,7 +32,7 @@ const suggestions = [
 ];
 
 const knownVideo = /youtube\.com|youtu\.be/i;
-const knownTest = /gateoverflow\.in|gate2026\.iitg\.ac\.in|testbook\.com|gradeup\.co|unacademy\.com/i;
+const knownTest = /gateoverflow\.in|gate2026\.iitg\.ac\.in|docs\.aglasem\.com|testbook\.com|gradeup\.co|unacademy\.com/i;
 
 function detectType(url: string): {type: string; label: string} | null {
   if (!url) return null;
@@ -140,7 +145,11 @@ export default function ResourcesClient() {
 
   return (
     <>
-    
+      <div className="card" style={{marginBottom: 13}}>
+        <p style={{margin: 0, color: 'var(--muted)', fontSize: 12}}>
+          Pick the real syllabus subject a resource belongs to and it will count toward that subject's progress on the Progress page and in your plan. Paste a link and the type (video / PYQ / notes) is detected automatically — you can still change it before saving. Nothing below is added for you; every suggestion needs your own tap.
+        </p>
+      </div>
 
       <div className="section">
         <h3>Your resource shelf</h3>

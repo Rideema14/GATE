@@ -200,5 +200,3 @@ components/     Client components for each page
 lib/            Auth, database client, and study-plan logic
 prisma/         Schema and syllabus seed data
 ```
-#   G A T E  
- 

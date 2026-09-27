@@ -1,9 +1,10 @@
 import {NextResponse} from 'next/server';
 import {db} from '@/lib/db';
-import {user} from '@/lib/auth';
+import {authId} from '@/lib/auth';
+import {getSubjects} from '@/lib/syllabus';
 
 export async function POST(req: Request) {
-  const u = await user();
+  const u = await authId();
   if (!u) return NextResponse.json({error: 'Unauthorized'}, {status: 401});
   const b = await req.json();
 
@@ -20,11 +21,13 @@ export async function POST(req: Request) {
   // A resource only counts toward a subject's progress if it's genuinely
   // linked to one of the real syllabus subjects — never trust a free-typed
   // name from the client. "All subjects" / left blank stays unlinked
-  // (subjectId null) rather than being guessed at.
+  // (subjectId null) rather than being guessed at. Subjects are cached
+  // in-memory (lib/syllabus.ts) since they're static seed data, so this
+  // costs no DB round trip on the common path.
   let subjectId: string | null = null;
   let subjectName = 'All subjects';
   if (b.subjectId) {
-    const subj = await db.subject.findUnique({where: {id: String(b.subjectId)}});
+    const subj = (await getSubjects()).find(s => s.id === String(b.subjectId));
     if (subj) {
       subjectId = subj.id;
       subjectName = subj.name;
@@ -41,7 +44,7 @@ export async function POST(req: Request) {
   try {
     const resource = await db.resource.create({
       data: {
-        userId: u.id,
+        userId: u,
         name: b.name,
         type,
         subject: subjectName,
@@ -64,14 +67,14 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const u = await user();
+  const u = await authId();
   if (!u) return NextResponse.json({error: 'Unauthorized'}, {status: 401});
   const {id} = await req.json();
   if (!id) return NextResponse.json({error: 'Missing resource id'}, {status: 400});
 
   // Ownership check before delete — a user can only ever remove their own
   // resource, never anyone else's.
-  const existing = await db.resource.findFirst({where: {id: String(id), userId: u.id}});
+  const existing = await db.resource.findFirst({where: {id: String(id), userId: u}});
   if (!existing) return NextResponse.json({error: 'Resource not found'}, {status: 404});
 
   await db.resource.delete({where: {id: existing.id}});

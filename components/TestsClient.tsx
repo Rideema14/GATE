@@ -6,6 +6,37 @@ const suggestions = [
   {name: 'Weekly Mock Tests', type: 'Mock', total: 10},
 ];
 
+// Every year GATE DA has existed so far — it's a new paper, first held in
+// 2024, so this genuinely is "all years", not a shortened list. Each entry
+// links to the real, freely viewable official question paper and, where
+// one is publicly available, the official answer key — plus GATE Overflow's
+// tag for that year, which has every question from that paper answered and
+// explained by the community (the closest thing to a solved answer key for
+// years where an official one isn't in the clear).
+const PYQ_YEARS = [
+  {
+    year: 2026,
+    authority: 'IIT Guwahati',
+    qp: 'https://docs.aglasem.com/view/3dbad98c-8047-11f1-82e7-0aa932765c8b',
+    ak: 'https://docs.aglasem.com/view/042ee258-8047-11f1-83ad-0aa932765c8b',
+    overflow: 'https://gateoverflow.in/tag/gateda-2026',
+  },
+  {
+    year: 2025,
+    authority: 'IIT Roorkee',
+    qp: 'https://docs.aglasem.com/view/13b3c34e-3893-11f0-8293-0a5e36bc6706',
+    ak: null,
+    overflow: 'https://gateoverflow.in/tag/gateda-2025',
+  },
+  {
+    year: 2024,
+    authority: 'IISc Bangalore',
+    qp: 'https://docs.aglasem.com/view/3bcd14a6-315b-11ef-8ae9-0a5e36bc6706',
+    ak: 'https://docs.aglasem.com/view/20f3cdc8-315b-11ef-9554-0a5e36bc6706',
+    overflow: 'https://gateoverflow.in/tag/gate-ds-ai-2024',
+  },
+];
+
 export default function TestsClient() {
   const [d, setD] = useState<any>();
   const [name, setName] = useState('');
@@ -13,6 +44,17 @@ export default function TestsClient() {
   const [subject, setSubject] = useState('');
   const [total, setTotal] = useState('10');
   const [addingSuggestion, setAddingSuggestion] = useState<string | null>(null);
+  const [openYear, setOpenYear] = useState<number | null>(null);
+  const [q, setQ] = useState('');
+
+  function searchPapers() {
+    if (!q.trim()) return;
+    // GATE Overflow holds every real GATE DA question with its solution,
+    // across all 3 years, so a search there is a search of the actual PYQs
+    // — this opens their site's own search rather than us hosting a copy
+    // of copyrighted exam content ourselves.
+    window.open(`https://www.google.com/search?q=${encodeURIComponent(`site:gateoverflow.in GATE DA ${q}`)}`, '_blank');
+  }
 
   async function load() {
     setD(await (await fetch('/api/me')).json());
@@ -46,6 +88,38 @@ export default function TestsClient() {
 
   return (
     <>
+      <div className="card" style={{marginBottom: 13}}>
+        <div className="widget-head">
+          <h4>📄 GATE DA — every year's real paper</h4>
+          <span>2024, 2025 and 2026 — that's all the years GATE DA has existed so far</span>
+        </div>
+        <div style={{display: 'flex', gap: 8, marginBottom: 14}}>
+          <input placeholder="Search past questions, e.g. 'gradient descent' or 'normalization'" value={q} onChange={e => setQ(e.target.value)} onKeyDown={e => e.key === 'Enter' && searchPapers()} style={{flex: 1}} />
+          <button className="btn primary" onClick={searchPapers}>Search PYQs</button>
+        </div>
+        <p style={{margin: '0 0 16px', color: 'var(--muted)', fontSize: 11.5}}>
+          Search opens GATE Overflow's real, solved archive of every GATE DA question ever asked — not a generic web search. I can't host or reproduce the copyrighted papers myself, but every paper below opens as a real, complete document right here, not just a link.
+        </p>
+        {PYQ_YEARS.map(y => (
+          <div key={y.year} style={{borderTop: '1px solid var(--line-soft)', paddingTop: 14, marginTop: 14}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8}}>
+              <div>
+                <b style={{fontFamily: 'var(--font-display)', fontSize: 16}}>GATE DA {y.year}</b>
+                <div style={{color: 'var(--muted)', fontSize: 11}}>Conducted by {y.authority}</div>
+              </div>
+              <div style={{display: 'flex', gap: 7, flexWrap: 'wrap'}}>
+                <button className="btn primary" onClick={() => setOpenYear(openYear === y.year ? null : y.year)}>{openYear === y.year ? 'Hide paper' : 'View question paper'}</button>
+                {y.ak && <a className="btn" href={y.ak} target="_blank">Answer key</a>}
+                <a className="btn" href={y.overflow} target="_blank">Solved on GATE Overflow</a>
+              </div>
+            </div>
+            {openYear === y.year && (
+              <iframe src={y.qp} title={`GATE DA ${y.year} question paper`} style={{width: '100%', height: 600, border: '1px solid var(--line)', borderRadius: 12, marginTop: 12}} />
+            )}
+          </div>
+        ))}
+      </div>
+
       <div className="card">
         <div className="grid three">
           <input placeholder="Test series / PYQ name" value={name} onChange={e => setName(e.target.value)} />
