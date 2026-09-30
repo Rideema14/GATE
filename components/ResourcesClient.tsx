@@ -145,12 +145,6 @@ export default function ResourcesClient() {
 
   return (
     <>
-      <div className="card" style={{marginBottom: 13}}>
-        <p style={{margin: 0, color: 'var(--muted)', fontSize: 12}}>
-          Pick the real syllabus subject a resource belongs to and it will count toward that subject's progress on the Progress page and in your plan. Paste a link and the type (video / PYQ / notes) is detected automatically — you can still change it before saving. Nothing below is added for you; every suggestion needs your own tap.
-        </p>
-      </div>
-
       <div className="section">
         <h3>Your resource shelf</h3>
         <button className="btn primary" onClick={() => setShow(!show)}>＋ Add resource</button>

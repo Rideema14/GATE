@@ -53,7 +53,6 @@ export default function DashboardClient() {
       <div className="dash-intro">
         <div className="eyebrow">🎯 Your preparation</div>
         <h2>{days} days to build your DA score.</h2>
-        <p>Your remaining syllabus, split into learning, practice and revision. Complete a topic or log a test score, and tomorrow's plan reshapes itself around it.</p>
         <span className="dash-sticker">🌷</span>
       </div>
 
@@ -101,11 +100,11 @@ export default function DashboardClient() {
 
           {/* Real day-by-day plan, presented as planner-style day cards */}
           <div className="daycards">
-            {dayCards.map((c: any) => {
+            {dayCards.map((c: any, ci: number) => {
               const dt = new Date(c.date);
               const wd = dt.toLocaleDateString('en-IN', {weekday: 'long'});
               return (
-                <div className="daycard" key={c.date}>
+                <div className="daycard" key={c.date} style={{'--dcolor': DOT_COLORS[ci % DOT_COLORS.length]} as React.CSSProperties}>
                   <div className="daycard-head">
                     <span className="emoji">{WEEKDAY_EMOJI[wd] || '📅'}</span>
                     <b>{wd}</b>
@@ -131,10 +130,9 @@ export default function DashboardClient() {
             })}
           </div>
 
-          <div className="widget">
+          <div className="widget tint-green">
             <div className="widget-head">
-              <h4>🌱 What am I weak at?</h4>
-              <span>Test scores where you have them, else how much is unfinished</span>
+              <span className="widget-pill moss">🌱 Weak subjects</span>
             </div>
             {weakSubjects.length ? (
               weakSubjects.slice(0, 5).map((s: any, i: number) => {
@@ -154,14 +152,14 @@ export default function DashboardClient() {
                 );
               })
             ) : (
-              <div className="empty">Nothing stands out as weak yet — keep going, or score a tagged test.</div>
+              <div className="empty">Nothing weak yet — keep going!</div>
             )}
           </div>
         </div>
 
         <div className="bento-aside">
-          <div className="widget">
-            <div className="widget-head"><h4>📌 Subjects</h4></div>
+          <div className="widget tint-peach">
+            <div className="widget-head"><span className="widget-pill brass">📌 Subjects</span></div>
             {d.subjects.map((s: any, i: number) => {
               const st = plan?.subjectStats?.find((x: any) => x.subjectId === s.id);
               const p = st?.completionPct ?? 0;
@@ -177,8 +175,8 @@ export default function DashboardClient() {
             })}
           </div>
 
-          <div className="widget">
-            <div className="widget-head"><h4>☀️ Daily tasks</h4></div>
+          <div className="widget tint-blue">
+            <div className="widget-head"><span className="widget-pill sky">☀️ Today at a glance</span></div>
             <div className="stat-row" style={{'--accent': 'var(--brass)'} as React.CSSProperties}>
               <div className="stat-chip"><BookOpen size={15} /></div>
               <div className="stat-label">Syllabus</div>
@@ -201,12 +199,12 @@ export default function DashboardClient() {
             </div>
           </div>
 
-          <div className="widget">
+          <div className="widget tint-pink">
             <div className="widget-head">
-              <h4>📚 Resources</h4>
+              <span className="widget-pill pink">📚 Resources</span>
               <Link href="/resources" className="btn" style={{padding: '5px 9px', fontSize: 11}}>Manage</Link>
             </div>
-            {(d.resources || []).length === 0 && <div className="empty" style={{padding: 16, fontSize: 11.5}}>None yet — add one on the Resources page.</div>}
+            {(d.resources || []).length === 0 && <div className="empty" style={{padding: 16, fontSize: 11.5}}>None yet.</div>}
             {(d.resources || []).slice(0, 4).map((r: any) => (
               <div className="mini-resource" key={r.id}>
                 <div className="icon" style={{width: 30, height: 30}}><ResourceIcon type={r.type} size={14} /></div>

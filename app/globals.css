@@ -340,9 +340,26 @@ input:focus, select:focus { border-color: var(--brass); }
   padding: 18px;
   box-shadow: var(--shadow-sm);
 }
-.widget-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; }
+.widget.tint-peach { background: linear-gradient(160deg, #fffaf0, #fcecd0); border-color: #f0dbae; }
+.widget.tint-blue { background: linear-gradient(160deg, #f0f9fc, #ddeff6); border-color: #c3e2ec; }
+.widget.tint-green { background: linear-gradient(160deg, #f2faf3, #e2f2e5); border-color: #cbe8d0; }
+.widget.tint-pink { background: linear-gradient(160deg, #fdf2f5, #fbe5ea); border-color: #f4ccd6; }
+.widget-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; gap: 10px; flex-wrap: wrap; }
 .widget-head h4 { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 7px; }
 .widget-head span { font-size: 11px; color: var(--muted); }
+.widget-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 14px;
+  border-radius: 99px;
+  font-size: 12px; font-weight: 700;
+  color: #fff;
+  box-shadow: 0 4px 10px -4px rgba(58, 51, 43, 0.35);
+}
+.widget-pill.brass { background: linear-gradient(120deg, var(--brass), var(--brass-soft)); }
+.widget-pill.sky { background: linear-gradient(120deg, var(--sky), var(--sky-deep)); }
+.widget-pill.moss { background: linear-gradient(120deg, var(--moss), #3f7f57); }
+.widget-pill.rust { background: linear-gradient(120deg, var(--rust), #a8442c); }
+.widget-pill.pink { background: linear-gradient(120deg, var(--pink), #c96a86); }
 
 /* Flip-card countdown, echoing a planner's clock widget: two dark teal
    tiles, one showing days remaining, one today's date. */
@@ -361,7 +378,8 @@ input:focus, select:focus { border-color: var(--brass); }
 .weekstrip .wd.test { background: rgba(255, 255, 255, 0.32); }
 
 .daycards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.daycard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-sm); }
+.daycard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-sm); border-top: 3px solid var(--dcolor, var(--brass)); transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.daycard:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 .daycard-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
 .daycard-head .emoji { font-size: 16px; }
 .daycard-head b { font-family: var(--font-display); font-size: 14px; }

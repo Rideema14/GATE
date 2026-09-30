@@ -97,9 +97,6 @@ export default function TestsClient() {
           <input placeholder="Search past questions, e.g. 'gradient descent' or 'normalization'" value={q} onChange={e => setQ(e.target.value)} onKeyDown={e => e.key === 'Enter' && searchPapers()} style={{flex: 1}} />
           <button className="btn primary" onClick={searchPapers}>Search PYQs</button>
         </div>
-        <p style={{margin: '0 0 16px', color: 'var(--muted)', fontSize: 11.5}}>
-          Search opens GATE Overflow's real, solved archive of every GATE DA question ever asked — not a generic web search. I can't host or reproduce the copyrighted papers myself, but every paper below opens as a real, complete document right here, not just a link.
-        </p>
         {PYQ_YEARS.map(y => (
           <div key={y.year} style={{borderTop: '1px solid var(--line-soft)', paddingTop: 14, marginTop: 14}}>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8}}>
@@ -138,9 +135,6 @@ export default function TestsClient() {
           <input type="number" value={total} onChange={e => setTotal(e.target.value)} placeholder="Total attempts" />
           <button className="btn primary" onClick={add}>＋ Add</button>
         </div>
-        <p style={{margin: '9px 0 0', color: 'var(--muted)', fontSize: 12}}>
-          Tag a test with a subject when you score it and the dashboard's "weak spots" will factor in that score, not just how much of the subject you've read.
-        </p>
       </div>
 
       {d.tests.length === 0 && <div className="empty" style={{marginTop: 13}}>No tests yet — add your own above, or add a suggestion below.</div>}
