@@ -1,6 +1,7 @@
 'use client';
 import {useEffect, useState} from 'react';
 import ResourceIcon from './ResourceIcon';
+import NotesPanel from './NotesPanel';
 
 // Real, well-known references only — no invented links, no fabricated video
 // counts. These are SUGGESTIONS: nothing here touches your data, your plan,
@@ -50,6 +51,7 @@ export default function ResourcesClient() {
   const [f, setF] = useState({name: '', type: 'video', subjectId: '', totalUnits: '10', url: '', description: '', playlistUrl: ''});
   const [detected, setDetected] = useState<string | null>(null);
   const [removing, setRemoving] = useState<string | null>(null);
+  const [openNotes, setOpenNotes] = useState<string | null>(null);
 
   async function load() {
     setD(await (await fetch('/api/me')).json());
@@ -223,13 +225,19 @@ export default function ResourcesClient() {
               {r.items?.length > 0 ? (
                 <div style={{marginTop: 14, maxHeight: 320, overflow: 'auto'}}>
                   {r.items.map((v: any, i: number) => (
-                    <div className="task" key={v.id} style={{padding: '9px 0'}}>
-                      <button className={`check ${v.completed ? 'done' : ''}`} onClick={() => toggle(v)}>{v.completed ? '✓' : ''}</button>
-                      <div style={{flex: 1}}>
-                        <b>{i + 1}. {v.title}</b>
-                        <small>{v.completed ? 'Completed' : 'Not completed'}</small>
+                    <div key={v.id}>
+                      <div className="task" style={{padding: '9px 0'}}>
+                        <button className={`check ${v.completed ? 'done' : ''}`} onClick={() => toggle(v)}>{v.completed ? '✓' : ''}</button>
+                        <div style={{flex: 1}}>
+                          <b>{i + 1}. {v.title}</b>
+                          <small>{v.completed ? 'Completed' : 'Not completed'}</small>
+                        </div>
+                        <button className="btn" style={{padding: '6px 8px'}} onClick={() => setOpenNotes(openNotes === v.id ? null : v.id)}>
+                          {d.noteItemIds?.includes(v.id) ? '📝 Notes ✓' : '📝 Notes'}
+                        </button>
+                        <a className="btn" style={{padding: '6px 8px'}} target="_blank" href={`https://www.youtube.com/watch?v=${v.videoId}`}>Watch</a>
                       </div>
-                      <a className="btn" style={{padding: '6px 8px'}} target="_blank" href={`https://www.youtube.com/watch?v=${v.videoId}`}>Watch</a>
+                      {openNotes === v.id && <NotesPanel itemId={v.id} title={v.title} onChanged={load} />}
                     </div>
                   ))}
                 </div>
